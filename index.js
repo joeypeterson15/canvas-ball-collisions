@@ -4,7 +4,7 @@ let lastTime
 
 const canvas = document.getElementById('canvas')
 const cxt = canvas.getContext("2d")
-
+const MaxSpeed = 3
 
 
 
@@ -21,6 +21,8 @@ class Shape {
     }
 
     move(dt) {
+        if (this.vx > MaxSpeed) this.vx = MaxSpeed
+        if (this.vy > MaxSpeed) this.vy = MaxSpeed
         this.x += this.vx * 5
         this.y += this.vy * 5
     }
@@ -98,8 +100,13 @@ function handleCollision(info) {
     info.o1.vx = ((info.o1.m - info.o2.m) / (info.o1.m + info.o2.m)) * info.o1.vx + ((2 * info.o2.m)/ (info.o1.m + info.o2.m)) * info.o2.vx
     info.o1.vy = ((info.o1.m - info.o2.m) / (info.o1.m + info.o2.m)) * info.o1.vy + ((2 * info.o2.m)/ (info.o1.m + info.o2.m)) * info.o2.vy
 
-    info.o2.vx = ((2 * info.o1.m)/ (info.o1.m + info.o2.m)) * info.o1.vx + ((info.o2.m - info.o1.m) / (info.o1.m + info.o2.m)) * info.o2.vx
-    info.o2.vy = ((2 * info.o1.m)/ (info.o1.m + info.o2.m)) * info.o1.vy + ((info.o2.m - info.o1.m) / (info.o1.m + info.o2.m)) * info.o2.vy
+    info.o2.vx = -((2 * info.o1.m)/ (info.o1.m + info.o2.m)) * info.o1.vx + ((info.o2.m - info.o1.m) / (info.o1.m + info.o2.m)) * info.o2.vx
+    info.o2.vy = -((2 * info.o1.m)/ (info.o1.m + info.o2.m)) * info.o1.vy + ((info.o2.m - info.o1.m) / (info.o1.m + info.o2.m)) * info.o2.vy
+}
+
+
+function getRandomInt(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
 
@@ -108,18 +115,22 @@ function handleCollision(info) {
 
 
 
-const shape = new Shape(100, 200, 10, 1, 0, 1, 1, 20)
-const shape1 = new Shape(900, 200, 10, -1, 0, 1, 1, 20)
+const shape = new Shape(100, 100, 20, 1, 1, 1, 1, 400)
+const shape1 = new Shape(900, 700, 10, -2, -1, 1, 1, 50)
+const shape2 = new Shape(400, 800, 40, 2, -1, 1, 1, 800)
 
-let objects = [shape, shape1]
+let objects = [shape, shape1, shape2]
+let count = 0
 
 function update (time) {
+
+    count += 1;
 
     cxt.clearRect(0, 0, canvas.width, canvas.height)
 
     if (lastTime !== null) {
         let dt = time - lastTime
-        // console.log(dt)
+
         for (let shape of objects) {
 
             shape.move(dt)
@@ -127,13 +138,24 @@ function update (time) {
             shape.wallCollisions()
         }
 
-        let {collisionObj, isCollided} = checkCollision(objects[0], objects[1])
-        if (isCollided) {
-            handleCollision(collisionObj)
+        for (let i = 0; i < objects.length; i++){
+            for (let j = i + 1; j < objects.length; j++){
+
+                let {collisionObj, isCollided} = checkCollision(objects[i], objects[j])
+                if (isCollided) {
+                    handleCollision(collisionObj)
+                }
+            }
         }
+
     }
 
-    // shape.draw()
+
+    if (count % 500 === 1) {
+        objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000)  ))
+    }
+
+
     lastTime = time
 
     window.requestAnimationFrame(update)
