@@ -79,8 +79,8 @@ function checkCollision(o1, o2) {
 }
 
 function handleCollision(info) {
-    let nx = info.dx /info.d;
-    let ny = info.dy /info.d;
+    let nx = info.dx /info.d; //eigenvector
+    let ny = info.dy /info.d; //eigenvector
     let s = info.o1.r + info.o2.r - info.d;
     info.o1.x -= nx * s/2;
     info.o1.y -= ny * s/2;
