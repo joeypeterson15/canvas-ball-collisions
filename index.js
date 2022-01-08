@@ -88,7 +88,8 @@ function handleCollision(info) {
     info.o2.y += ny * s/2;
 
     // Magic...
-    let k = -2 * ((info.o2.vx - info.o1.vx) * nx + (info.o2.vy - info.o1.vy) * ny) / (1/info.o1.m + 1/info.o2.m);
+    // let k = -2 * ((info.o2.vx - info.o1.vx) * nx + (info.o2.vy - info.o1.vy) * ny) / (1/info.o1.m + 1/info.o2.m);
+    let k = 100
     info.o1.vx -= k * nx / info.o1.m;  // Same as before, just added "k" and switched to "m" instead of "s/2"
     info.o1.vy -= k * ny / info.o1.m;
     info.o2.vx += k * nx / info.o2.m;
@@ -102,8 +103,8 @@ function handleCollision(info) {
 
 
 
-const shape = new Shape(100, 100, 30, 1, 1, 1, 1, 20)
-const shape1 = new Shape(200, 200, 10, -2, 1, 1, 1, 1)
+const shape = new Shape(100, 200, 10, 1, 0, 1, 1, 20)
+const shape1 = new Shape(900, 200, 30, -1, 0, 1, 1, 20)
 
 let objects = [shape, shape1]
 
