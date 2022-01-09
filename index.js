@@ -82,6 +82,20 @@ class Player {
     }
 }
 
+function checkFoodCollision (player, food) {
+    let dx = player.x - food.x;
+    let dy = player.y - food.y;
+    let d = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    if (d < player.r + food.r) {
+        return  {
+            collidedWithFood: true
+        }
+    }
+    return  {
+        collidedWithFood: false
+    }
+}
+
 class Collision {
     constructor(o1, o2, dx, dy, d) {
         this.o1 = o1;
@@ -179,14 +193,23 @@ function update (time) {
             shape.wallCollisions()
         }
 
-        //check for collisions.
+        //check for shape collisions.
         for (let i = 0; i < objects.length; i++){
             for (let j = i + 1; j < objects.length; j++){
-
                 let {collisionObj, isCollided} = checkCollision(objects[i], objects[j])
                 if (isCollided) {
                     handleCollision(collisionObj)
                 }
+            }
+        }
+
+        //check food/player collision
+        for (let i = 0; i < objects.length; i++) {
+            if (objects[i].isFood) {
+                let {collidedWithFood} = checkFoodCollision(player, objects[i])
+                    if (collidedWithFood) {
+                        objects.splice(i,1)
+                    }
             }
         }
 
