@@ -31,6 +31,7 @@ class Shape {
         // if (this.vy < Math.abs(SLOWESTSPEED)) this.vy = SLOWESTSPEED
         this.x += this.vx * SPEEDINCREASE
         this.y += this.vy * SPEEDINCREASE
+
     }
 
     draw () {
@@ -174,6 +175,21 @@ function getRandomInt(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+function checkPlayerPosition(player) {
+    if (player.x + player.r > canvas.width ) {
+        player.x = canvas.width
+    }
+    else if (player.x - player.r < 0 ) {
+        player.x = 0
+    }
+    else if (player.y + player.r > canvas.height ) {
+        player.x = canvas.height
+    }
+    else if (player.y - player.r < 0 ) {
+        player.x = 0
+    }
+}
+
 
 
 
@@ -192,7 +208,6 @@ function update (time) {
 
     count += 1;
     if (count % 10 === 1) {
-
         score.textContent = parseFloat(score.textContent) + 1
     }
 
@@ -209,6 +224,7 @@ function update (time) {
             shape.move(dt)
             shape.draw()
             shape.wallCollisions()
+            checkPlayerPosition(player)
         }
 
         //check for shape collisions.
@@ -230,6 +246,7 @@ function update (time) {
                         score.textContent = parseFloat(score.textContent) + 100
                     }
             } else {
+        //check for loss
                 let {isLose} = checkLoss(player, objects[i])
                 if (isLose) {
                     objects = [shape, shape1, shape2]
@@ -238,14 +255,7 @@ function update (time) {
             }
         }
 
-        //check player/shape collisions(lose)
-        for (let i = 0; i < objects.length; i++) {
-
-        }
-
     }
-
-
     if (count % 500 === 1) { //create new object
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000)  ))
     }
