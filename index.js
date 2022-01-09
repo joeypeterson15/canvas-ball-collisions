@@ -3,6 +3,7 @@
 let lastTime
 
 const canvas = document.getElementById('canvas')
+const score = document.getElementById('score')
 const cxt = canvas.getContext("2d")
 const MaxSpeed = 3
 const SPEEDINCREASE = 1.1
@@ -209,6 +210,7 @@ function update (time) {
                 let {collidedWithFood} = checkFoodCollision(player, objects[i])
                     if (collidedWithFood) {
                         objects.splice(i,1)
+                        score.textContent = parseFloat(score.textContent) + 100
                     }
             }
         }
