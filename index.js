@@ -96,6 +96,19 @@ function checkFoodCollision (player, food) {
         collidedWithFood: false
     }
 }
+function checkLoss (player, shape) {
+    let dx = player.x - shape.x;
+    let dy = player.y - shape.y;
+    let d = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    if (d < player.r + shape.r) {
+        return  {
+            isLose: true
+        }
+    }
+    return  {
+        isLose: false
+    }
+}
 
 class Collision {
     constructor(o1, o2, dx, dy, d) {
@@ -178,6 +191,10 @@ let count = 0
 function update (time) {
 
     count += 1;
+    if (count % 10 === 1) {
+
+        score.textContent = parseFloat(score.textContent) + 1
+    }
 
     //clear the frame every paint
     cxt.clearRect(0, 0, canvas.width, canvas.height)
@@ -212,7 +229,18 @@ function update (time) {
                         objects.splice(i,1)
                         score.textContent = parseFloat(score.textContent) + 100
                     }
+            } else {
+                let {isLose} = checkLoss(player, objects[i])
+                if (isLose) {
+                    objects = [shape, shape1, shape2]
+                    score.textContent = 0
+                }
             }
+        }
+
+        //check player/shape collisions(lose)
+        for (let i = 0; i < objects.length; i++) {
+
         }
 
     }
@@ -225,7 +253,7 @@ function update (time) {
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true  ))
     }
 
-    
+
     lastTime = time
 
     window.requestAnimationFrame(update)
