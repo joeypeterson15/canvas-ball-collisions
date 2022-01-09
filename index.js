@@ -6,6 +6,7 @@ const canvas = document.getElementById('canvas')
 const cxt = canvas.getContext("2d")
 const MaxSpeed = 3
 const SPEEDINCREASE = 1.1
+const SLOWESTSPEED = 0.1
 
 
 
@@ -25,6 +26,8 @@ class Shape {
     move(dt) {
         if (this.vx > MaxSpeed) this.vx = MaxSpeed
         if (this.vy > MaxSpeed) this.vy = MaxSpeed
+        // if (this.vx < Math.abs(SLOWESTSPEED)) this.vx = SLOWESTSPEED
+        // if (this.vy < Math.abs(SLOWESTSPEED)) this.vy = SLOWESTSPEED
         this.x += this.vx * SPEEDINCREASE
         this.y += this.vy * SPEEDINCREASE
     }
