@@ -5,6 +5,7 @@ let lastTime
 const canvas = document.getElementById('canvas')
 const cxt = canvas.getContext("2d")
 const MaxSpeed = 3
+const SPEEDINCREASE = 1.1
 
 
 
@@ -24,8 +25,8 @@ class Shape {
     move(dt) {
         if (this.vx > MaxSpeed) this.vx = MaxSpeed
         if (this.vy > MaxSpeed) this.vy = MaxSpeed
-        this.x += this.vx * 5
-        this.y += this.vy * 5
+        this.x += this.vx * SPEEDINCREASE
+        this.y += this.vy * SPEEDINCREASE
     }
 
     draw () {
@@ -150,7 +151,7 @@ const player = new Player(0, 0, 10)
 
 
 const shape = new Shape(100, 100, 20, 1, 1, 1, 1, 400)
-const shape1 = new Shape(900, 700, 10, -2, -1, 1, 1, 50)
+const shape1 = new Shape(900, 700, 15, -2, -1, 1, 1, 100)
 const shape2 = new Shape(400, 800, 40, 2, -1, 1, 1, 800)
 
 let objects = [shape, shape1, shape2]
@@ -175,7 +176,7 @@ function update (time) {
             shape.wallCollisions()
         }
 
-        //check for collisions. if
+        //check for collisions.
         for (let i = 0; i < objects.length; i++){
             for (let j = i + 1; j < objects.length; j++){
 
