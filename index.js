@@ -218,14 +218,14 @@ function update (time) {
     }
 
 
-    if (count % 500 === 1) {
+    if (count % 500 === 1) { //create new object
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000)  ))
     }
-    if (count % 1200 === 1) {
+    if (count % 1200 === 1) { //create new food
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true  ))
     }
 
-
+    
     lastTime = time
 
     window.requestAnimationFrame(update)
