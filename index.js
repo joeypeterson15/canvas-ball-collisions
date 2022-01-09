@@ -9,7 +9,7 @@ const MaxSpeed = 3
 
 
 class Shape {
-    constructor(x, y, r, vx, vy, dx, dy, m) {
+    constructor(x, y, r, vx, vy, dx, dy, m, isFood=false) {
         this.x = x;
         this.y = y;
         this.r = r
@@ -18,6 +18,7 @@ class Shape {
         this.dx = dx;
         this.dy = dy;
         this.m = m;
+        this.isFood = isFood
     }
 
     move(dt) {
@@ -31,7 +32,10 @@ class Shape {
         cxt.beginPath()
         cxt.arc(this.x, this.y, this.r, 0, Math.PI * 2)
         // cxt.closePath()
-        cxt.fillStyle = 'blue';
+        if (this.isFood) {
+            cxt.fillStyle = 'white'
+        }
+        else cxt.fillStyle = 'blue';
         cxt.fill()
     }
     wallCollisions () {
@@ -80,6 +84,15 @@ function checkCollision(o1, o2) {
     }
 }
 
+/*
+handleCollision takes in a collision object.
+It will calculate the final speeds of each of the shapes using
+completely elastic principles where (linear) momentum is conserved
+and kinetic energy is conserved(no energy is lost to environment).
+
+conservation of linear momentum ==> m1v1(i) + m2v2(i) = m1v1(f) + m2v2(f)    */
+
+
 function handleCollision(info) {
     let nx = info.dx /info.d; //eigenvector
     let ny = info.dy /info.d; //eigenvector
@@ -126,6 +139,7 @@ function update (time) {
 
     count += 1;
 
+    //clear the frame every paint
     cxt.clearRect(0, 0, canvas.width, canvas.height)
 
     if (lastTime !== null) {
@@ -138,6 +152,7 @@ function update (time) {
             shape.wallCollisions()
         }
 
+        //check for collisions. if
         for (let i = 0; i < objects.length; i++){
             for (let j = i + 1; j < objects.length; j++){
 
@@ -153,6 +168,9 @@ function update (time) {
 
     if (count % 500 === 1) {
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000)  ))
+    }
+    if (count % 1200 === 1) {
+        objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true  ))
     }
 
 
