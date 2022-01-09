@@ -58,6 +58,26 @@ class Shape {
     }
 }
 
+class Player {
+    constructor(x, y, r) {
+        this.x = x
+        this.y = y
+        this.r = r
+    }
+
+    reset () {
+        this.x = canvas.width / 2;
+        this.y = canvas.height / 2
+    }
+
+    draw () {
+        cxt.beginPath()
+        cxt.arc(this.x, this.y, this.r, 0, Math.PI * 2)
+        cxt.fillStyle = 'black'
+        cxt.fill()
+    }
+}
+
 class Collision {
     constructor(o1, o2, dx, dy, d) {
         this.o1 = o1;
@@ -126,6 +146,7 @@ function getRandomInt(min, max) {
 
 
 
+const player = new Player(0, 0, 10)
 
 
 const shape = new Shape(100, 100, 20, 1, 1, 1, 1, 400)
@@ -141,6 +162,8 @@ function update (time) {
 
     //clear the frame every paint
     cxt.clearRect(0, 0, canvas.width, canvas.height)
+
+    player.draw()
 
     if (lastTime !== null) {
         let dt = time - lastTime
@@ -178,6 +201,11 @@ function update (time) {
 
     window.requestAnimationFrame(update)
 }
+
+window.addEventListener('mousemove', e => {
+    player.x = e.x
+    player.y = e.y
+})
 
 
 window.requestAnimationFrame(update)
