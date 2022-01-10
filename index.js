@@ -1,7 +1,7 @@
 
 
 let lastTime
-
+let invicibilityTime = 5000
 const canvas = document.getElementById('canvas')
 const score = document.getElementById('score')
 const cxt = canvas.getContext("2d")
@@ -272,6 +272,18 @@ function update (time) {
 window.addEventListener('mousemove', e => {
     player.x = e.x
     player.y = e.y
+})
+
+let totalTime
+
+window.addEventListener('mousedown', e => {
+    let startTime = new Date()
+    console.log('startTime', startTime)
+    while (!totalTime && totalTime < invicibilityTime) {
+        let updateTime = new Date()
+        totalTime = updateTime - startTime
+        console.log('totalTime', totalTime)
+    }
 })
 
 
