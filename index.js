@@ -5,7 +5,7 @@ let lastTime
 const canvas = document.getElementById('canvas')
 const score = document.getElementById('score')
 const cxt = canvas.getContext("2d")
-const MaxSpeed = 3
+const MaxSpeed = 10
 const SPEEDINCREASE = 1.1
 const SLOWESTSPEED = 0.1
 
@@ -177,16 +177,16 @@ function getRandomInt(min, max) {
 
 function checkPlayerPosition(player) {
     if (player.x + player.r > canvas.width ) {
-        player.x = canvas.width
+        player.x = 1000
     }
-    else if (player.x - player.r < 0 ) {
+    else if (player.x <= 0 ) {
         player.x = 0
     }
-    else if (player.y + player.r > canvas.height ) {
-        player.x = canvas.height
+    else if (player.y >= canvas.height ) {
+        player.y = canvas.height
     }
-    else if (player.y - player.r < 0 ) {
-        player.x = 0
+    else if (player.y <= 0 ) {
+        player.y = 0
     }
 }
 
@@ -197,9 +197,9 @@ function checkPlayerPosition(player) {
 const player = new Player(0, 0, 10)
 
 
-const shape = new Shape(100, 100, 20, 1, 1, 1, 1, 400)
-const shape1 = new Shape(900, 700, 15, -2, -1, 1, 1, 100)
-const shape2 = new Shape(400, 800, 40, 2, -1, 1, 1, 800)
+const shape = new Shape(100, 100, 20, 20, 20, 1, 1, 400)
+const shape1 = new Shape(900, 700, 15, -4, -7, 1, 1, 100)
+const shape2 = new Shape(400, 800, 40, 4, -10, 1, 1, 800)
 
 let objects = [shape, shape1, shape2]
 let count = 0
