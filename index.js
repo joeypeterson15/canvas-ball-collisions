@@ -1,7 +1,10 @@
 
+let isInvisible = false
+let totalTime = 0
+const invisibilityTime = 5000
+
 
 let lastTime
-let invicibilityTime = 5000
 const canvas = document.getElementById('canvas')
 const score = document.getElementById('score')
 const cxt = canvas.getContext("2d")
@@ -12,7 +15,7 @@ const SLOWESTSPEED = 0.1
 
 
 class Shape {
-    constructor(x, y, r, vx, vy, dx, dy, m, isFood=false) {
+    constructor(x, y, r, vx, vy, dx, dy, m, isFood=false, timeCreated=null) {
         this.x = x;
         this.y = y;
         this.r = r
@@ -22,6 +25,7 @@ class Shape {
         this.dy = dy;
         this.m = m;
         this.isFood = isFood
+        this.timeCreated = timeCreated
     }
 
     move(dt) {
@@ -247,10 +251,23 @@ function update (time) {
                     }
             } else {
         //check for loss
-                let {isLose} = checkLoss(player, objects[i])
-                if (isLose) {
-                    objects = [shape, shape1, shape2]
-                    score.textContent = 0
+                if (!isInvisible) {
+
+                    let {isLose} = checkLoss(player, objects[i])
+                    if (isLose) {
+                        objects = [shape, shape1, shape2]
+                        score.textContent = 0
+                    }
+
+                }
+            }
+        }
+        //check food life
+        let currentTime = new Date()
+        for (let i = 0; i < objects.length; i++) {
+            if (objects[i].isFood) {
+                if (Math.abs(currentTime - objects[i].timeCreated) >= 5000){
+                    objects.splice(i,1)
                 }
             }
         }
@@ -260,7 +277,7 @@ function update (time) {
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000)  ))
     }
     if (count % 1200 === 1) { //create new food
-        objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true  ))
+        objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true, new Date()  ))
     }
 
 
@@ -274,17 +291,30 @@ window.addEventListener('mousemove', e => {
     player.y = e.y
 })
 
-let totalTime
 
-window.addEventListener('mousedown', e => {
-    let startTime = new Date()
-    console.log('startTime', startTime)
-    while (!totalTime && totalTime < invicibilityTime) {
-        let updateTime = new Date()
-        totalTime = updateTime - startTime
-        console.log('totalTime', totalTime)
-    }
-})
+let updateTime;
+// function invisibility () {
+
+//         let startTime = new Date()
+//         // console.log('startTime', startTime)
+//         while (!totalTime || totalTime < invisibilityTime) {
+//             isInvisible = true
+//             updateTime = new Date()
+//             totalTime = Math.abs(updateTime - startTime)
+//             // console.log('totalTime', totalTime)
+//         }
+
+//         isInvisible = false;
+// }
+
+// function stopInvisibility () {
+//     isInvisible = false;
+//     console.log('totalTime at stop', totalTime)
+// }
+
+
+// window.addEventListener('mousedown', invisibility )
+// window.addEventListener('mouseup', stopInvisibility)
 
 
 window.requestAnimationFrame(update)
