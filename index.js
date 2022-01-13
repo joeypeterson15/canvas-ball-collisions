@@ -2,6 +2,8 @@
 let isInvisible = false
 let totalTime = 0
 const invisibilityTime = 5000
+const colors = ['green', 'blue', 'black', 'yellow', ]
+let i = 0
 
 
 let lastTime
@@ -39,13 +41,23 @@ class Shape {
     }
 
     draw () {
+
         cxt.beginPath()
         cxt.arc(this.x, this.y, this.r, 0, Math.PI * 2)
         // cxt.closePath()
+        // if (this.isFood && i <= 3) {
+        //     cxt.fillStyle = [colors][i]
+        //     i += 1
+        // }
+        // else if (this.isFood && i === 4) {
+        //     cxt.fillStyle = [colors][0]
+        //     i = 0
+        // }
         if (this.isFood) {
-            cxt.fillStyle = 'white'
+            cxt.fillStyle = 'white';
         }
         else cxt.fillStyle = 'blue';
+
         cxt.fill()
     }
     wallCollisions () {
