@@ -1,7 +1,8 @@
 
 let isInvisible = false
+let invisibilityLocked = false
 let totalTime = 0
-const invisibilityTime = 5000
+let invisibilityTime = 500
 const colors = ['green', 'blue', 'black', 'yellow', ]
 let i = 0
 
@@ -9,6 +10,7 @@ let i = 0
 let lastTime
 const canvas = document.getElementById('canvas')
 const score = document.getElementById('score')
+const invisScore = document.getElementById('invis')
 const cxt = canvas.getContext("2d")
 const MaxSpeed = 10
 const SPEEDINCREASE = 1.1
@@ -227,6 +229,17 @@ function update (time) {
         score.textContent = parseFloat(score.textContent) + 1
     }
 
+    if (isInvisible) {
+      // change score
+      invisibilityTime -= 1
+      invisScore.textContent = invisibilityTime
+    }
+    if (isInvisible && invisibilityTime < 1) {
+      // change score
+      isInvisible = false
+      invisibilityLocked = true
+    }
+
     //clear the frame every paint
     cxt.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -247,7 +260,7 @@ function update (time) {
         for (let i = 0; i < objects.length; i++){
             for (let j = i + 1; j < objects.length; j++){
                 let {collisionObj, isCollided} = checkCollision(objects[i], objects[j])
-                if (isCollided) {
+                if (!isInvisible && isCollided) {
                     handleCollision(collisionObj)
                 }
             }
@@ -257,7 +270,7 @@ function update (time) {
         for (let i = 0; i < objects.length; i++) {
             if (objects[i].isFood) {
                 let {collidedWithFood} = checkFoodCollision(player, objects[i])
-                    if (collidedWithFood) {
+                    if (!isInvisible && collidedWithFood) {
                         objects.splice(i,1)
                         score.textContent = parseFloat(score.textContent) + 100
                     }
@@ -305,28 +318,22 @@ window.addEventListener('mousemove', e => {
 
 
 let updateTime;
-// function invisibility () {
-
-//         let startTime = new Date()
-//         // console.log('startTime', startTime)
-//         while (!totalTime || totalTime < invisibilityTime) {
-//             isInvisible = true
-//             updateTime = new Date()
-//             totalTime = Math.abs(updateTime - startTime)
-//             // console.log('totalTime', totalTime)
-//         }
-
-//         isInvisible = false;
-// }
-
-// function stopInvisibility () {
-//     isInvisible = false;
-//     console.log('totalTime at stop', totalTime)
-// }
 
 
-// window.addEventListener('mousedown', invisibility )
-// window.addEventListener('mouseup', stopInvisibility)
+function invisibility () {
+  if(!invisibilityLocked) {
+    isInvisible = true;
+  }
+}
+
+function stopInvisibility () {
+  isInvisible = false;
+}
+
+invisScore.textContent = invisibilityTime
+
+window.addEventListener('mousedown', invisibility )
+window.addEventListener('mouseup', stopInvisibility)
 
 
 window.requestAnimationFrame(update)
