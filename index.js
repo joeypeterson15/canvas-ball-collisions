@@ -15,11 +15,12 @@ const cxt = canvas.getContext("2d")
 const MaxSpeed = 10
 const SPEEDINCREASE = 1.1
 const SLOWESTSPEED = 0.1
+var image = document.querySelector('img')
 
 
 
 class Shape {
-    constructor(x, y, r, vx, vy, dx, dy, m, isFood=false, timeCreated=null) {
+    constructor(x, y, r, vx, vy, dx, dy, m, isFood=false, timeCreated=null, addInvicibility=false) {
         this.x = x;
         this.y = y;
         this.r = r
@@ -30,6 +31,7 @@ class Shape {
         this.m = m;
         this.isFood = isFood
         this.timeCreated = timeCreated
+        this.addInvicibility = addInvicibility
     }
 
     move(dt) {
@@ -46,21 +48,19 @@ class Shape {
 
         cxt.beginPath()
         cxt.arc(this.x, this.y, this.r, 0, Math.PI * 2)
-        // cxt.closePath()
-        // if (this.isFood && i <= 3) {
-        //     cxt.fillStyle = [colors][i]
-        //     i += 1
-        // }
-        // else if (this.isFood && i === 4) {
-        //     cxt.fillStyle = [colors][0]
-        //     i = 0
-        // }
+
         if (this.isFood) {
             cxt.fillStyle = 'white';
         }
+        else if (this.addInvicibility) {
+            cxt.fillStyle = 'green';
+        }
         else cxt.fillStyle = 'blue';
 
+
         cxt.fill()
+
+
     }
     wallCollisions () {
         if (this.x + this.r > canvas.width) {
@@ -113,6 +113,19 @@ function checkFoodCollision (player, food) {
     }
     return  {
         collidedWithFood: false
+    }
+}
+function checkInvisibleCollision (player, food) {
+    let dx = player.x - food.x;
+    let dy = player.y - food.y;
+    let d = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    if (d < player.r + food.r) {
+        return  {
+            collidedWithInvicibility: true
+        }
+    }
+    return  {
+        collidedWithInvicibility: false
     }
 }
 function checkLoss (player, shape) {
@@ -172,14 +185,6 @@ function handleCollision(info) {
     info.o1.y -= ny * s/2;
     info.o2.x += nx * s/2;
     info.o2.y += ny * s/2;
-
-    // Magic...
-    // let k = -2 * ((info.o2.vx - info.o1.vx) * nx + (info.o2.vy - info.o1.vy) * ny) / (1/info.o1.m + 1/info.o2.m);
-
-    // info.o1.vx -= k * nx / info.o1.m;  // Same as before, just added "k" and switched to "m" instead of "s/2"
-    // info.o1.vy -= k * ny / info.o1.m;
-    // info.o2.vx += k * nx / info.o2.m;
-    // info.o2.vy += k * ny / info.o2.m;
 
     info.o1.vx = ((info.o1.m - info.o2.m) / (info.o1.m + info.o2.m)) * info.o1.vx + ((2 * info.o2.m)/ (info.o1.m + info.o2.m)) * info.o2.vx
     info.o1.vy = ((info.o1.m - info.o2.m) / (info.o1.m + info.o2.m)) * info.o1.vy + ((2 * info.o2.m)/ (info.o1.m + info.o2.m)) * info.o2.vy
@@ -274,7 +279,17 @@ function update (time) {
                         objects.splice(i,1)
                         score.textContent = parseFloat(score.textContent) + 100
                     }
-            } else {
+            } else if (objects[i].addInvicibility) {
+                let {collidedWithInvicibility} = checkInvisibleCollision(player, objects[i])
+                if (collidedWithInvicibility) {
+                    objects.splice(i,1)
+                    invisScore.textContent = parseFloat(score.textContent) + 100
+                    invisibilityTime += 100
+
+                }
+            }
+
+            else {
         //check for loss
                 if (!isInvisible) {
 
@@ -291,7 +306,7 @@ function update (time) {
         let currentTime = new Date()
         for (let i = 0; i < objects.length; i++) {
             if (objects[i].isFood) {
-                if (Math.abs(currentTime - objects[i].timeCreated) >= 5000){
+                if (Math.abs(currentTime - objects[i].timeCreated) >= 2500){
                     objects.splice(i,1)
                 }
             }
@@ -303,6 +318,9 @@ function update (time) {
     }
     if (count % 1200 === 1) { //create new food
         objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), true, new Date()  ))
+    }
+    if (count % 500 === 1) { //create new food
+        objects.push(new Shape(getRandomInt(0,1000), getRandomInt(0,1000), getRandomInt(5,40), getRandomInt(1,5), getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(1,5),  getRandomInt(10,1000), false, new Date(), true  ))
     }
 
 
