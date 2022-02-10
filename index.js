@@ -234,7 +234,7 @@ function update (time) {
         score.textContent = parseFloat(score.textContent) + 1
     }
 
-    if (isInvisible) {
+    if (isInvisible && invisibilityTime > 0) {
       // change score
       invisibilityTime -= 1
       invisScore.textContent = invisibilityTime
@@ -242,7 +242,7 @@ function update (time) {
     if (isInvisible && invisibilityTime < 1) {
       // change score
       isInvisible = false
-      invisibilityLocked = true
+    //   invisibilityLocked = true
     }
 
     //clear the frame every paint
@@ -283,8 +283,9 @@ function update (time) {
                 let {collidedWithInvicibility} = checkInvisibleCollision(player, objects[i])
                 if (collidedWithInvicibility) {
                     objects.splice(i,1)
-                    invisScore.textContent = parseFloat(score.textContent) + 100
                     invisibilityTime += 100
+                    // invisScore.textContent = parseFloat(score.textContent) + 100
+                    invisScore.textContent = invisibilityTime
 
                 }
             }
