@@ -2,7 +2,7 @@
 let isInvisible = false
 let invisibilityLocked = false
 let totalTime = 0
-let invisibilityTime = 500
+let invisibilityTime = 100
 const colors = ['green', 'blue', 'black', 'yellow', ]
 let i = 0
 
@@ -50,7 +50,7 @@ class Shape {
         cxt.arc(this.x, this.y, this.r, 0, Math.PI * 2)
 
         if (this.isFood) {
-            cxt.fillStyle = 'white';
+            cxt.fillStyle = 'red';
         }
         else if (this.addInvicibility) {
             cxt.fillStyle = 'green';
@@ -283,7 +283,12 @@ function update (time) {
                 let {collidedWithInvicibility} = checkInvisibleCollision(player, objects[i])
                 if (collidedWithInvicibility) {
                     objects.splice(i,1)
-                    invisibilityTime += 100
+                    if (invisibilityTime <= 100) {
+                        invisibilityTime += 100
+
+                    } else{
+                        invisibilityTime = 200
+                    }
                     // invisScore.textContent = parseFloat(score.textContent) + 100
                     invisScore.textContent = invisibilityTime
 
